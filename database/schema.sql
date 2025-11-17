@@ -11,6 +11,7 @@ CREATE TABLE IF NOT EXISTS questions (
   part INTEGER, -- For listening: 1, 2, 3; NULL for others
   question_number INTEGER NOT NULL,
   question_text TEXT NOT NULL,
+  passage_text TEXT, -- For reading section - full passage text
   audio_url TEXT, -- For listening section
   option_a TEXT NOT NULL,
   option_b TEXT NOT NULL,

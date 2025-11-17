@@ -228,9 +228,6 @@ export default function TestPage({ params }: { params: Promise<{ sessionId: stri
                   <p className="text-sm text-amber-700">
                     {getReadingInstruction()}
                   </p>
-                  <p className="text-xs text-amber-600 mt-2 italic">
-                    Note: Full passage text will be added in a future update. Answer based on general knowledge for now.
-                  </p>
                 </div>
               </div>
             </div>
@@ -273,6 +270,16 @@ export default function TestPage({ params }: { params: Promise<{ sessionId: stri
                   </audio>
                 </div>
               )}
+              
+              {/* Passage text - ONLY for reading section */}
+              {currentSection === 'reading' && currentQuestion.passage_text && (
+                <div className="mb-6 bg-gray-50 border border-gray-200 rounded-lg p-6">
+                  <div className="prose prose-sm max-w-none text-gray-800 leading-relaxed whitespace-pre-line">
+                    {currentQuestion.passage_text}
+                  </div>
+                </div>
+              )}
+              
               <p className="text-lg text-gray-900 leading-relaxed">
                 {currentQuestion.question_text}
               </p>
@@ -283,6 +290,7 @@ export default function TestPage({ params }: { params: Promise<{ sessionId: stri
               {['a', 'b', 'c', 'd'].map((option) => {
                 const optionText = currentQuestion[`option_${option}` as keyof typeof currentQuestion]
                 const isSelected = answers[currentQuestion.id] === option
+                const isErrorIdentification = currentSection === 'structure' && currentQuestion.question_number > 15
 
                 return (
                   <button
@@ -302,7 +310,9 @@ export default function TestPage({ params }: { params: Promise<{ sessionId: stri
                       }`}>
                         {option.toUpperCase()}
                       </span>
-                      <span className="text-gray-900 pt-1">{optionText}</span>
+                      <span className={`text-gray-900 pt-1 ${isErrorIdentification ? 'underline decoration-2 decoration-blue-500' : ''}`}>
+                        {optionText}
+                      </span>
                     </div>
                   </button>
                 )
