@@ -4,7 +4,7 @@ import { use, useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { useTestStore } from '@/lib/store'
 import { submitTestResults } from '@/app/actions'
-import { SECTION_TIME_LIMITS, SECTION_QUESTIONS, SECTION_NAMES, formatTime, getListeningPartInfo } from '@/lib/utils'
+import { SECTION_TIME_LIMITS, SECTION_QUESTIONS, SECTION_NAMES, formatTime, getListeningPartInfo, getStructureInstruction, getReadingInstruction } from '@/lib/utils'
 import { Clock, ChevronLeft, ChevronRight, CheckCircle, AlertCircle } from 'lucide-react'
 
 export default function TestPage({ params }: { params: Promise<{ sessionId: string }> }) {
@@ -189,6 +189,47 @@ export default function TestPage({ params }: { params: Promise<{ sessionId: stri
                   </h3>
                   <p className="text-sm text-purple-700">
                     {getListeningPartInfo(currentQuestion.part).instruction}
+                  </p>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* Structure Section Instructions */}
+          {currentSection === 'structure' && (
+            <div className="bg-gradient-to-r from-green-50 to-emerald-50 border border-green-200 rounded-xl p-4 mb-6 shadow-sm">
+              <div className="flex items-start gap-3">
+                <svg className="h-5 w-5 text-green-600 mt-0.5 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                </svg>
+                <div>
+                  <h3 className="font-semibold text-green-900 text-sm mb-1">
+                    {currentQuestion.question_number <= 15 ? 'Sentence Completion' : 'Error Identification'}
+                  </h3>
+                  <p className="text-sm text-green-700">
+                    {getStructureInstruction(currentQuestion.question_number)}
+                  </p>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* Reading Section Warning */}
+          {currentSection === 'reading' && (
+            <div className="bg-gradient-to-r from-amber-50 to-orange-50 border border-amber-200 rounded-xl p-4 mb-6 shadow-sm">
+              <div className="flex items-start gap-3">
+                <svg className="h-5 w-5 text-amber-600 mt-0.5 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
+                </svg>
+                <div>
+                  <h3 className="font-semibold text-amber-900 text-sm mb-1">
+                    Reading Comprehension
+                  </h3>
+                  <p className="text-sm text-amber-700">
+                    {getReadingInstruction()}
+                  </p>
+                  <p className="text-xs text-amber-600 mt-2 italic">
+                    Note: Full passage text will be added in a future update. Answer based on general knowledge for now.
                   </p>
                 </div>
               </div>

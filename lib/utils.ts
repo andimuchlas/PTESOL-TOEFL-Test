@@ -103,3 +103,17 @@ export function getListeningPartInfo(part: number | null): { name: string; instr
     instruction: ''
   }
 }
+
+// Get instructions for structure section based on question number
+export function getStructureInstruction(questionNumber: number): string {
+  if (questionNumber <= 15) {
+    return 'Complete the sentence by choosing the correct answer.'
+  } else {
+    return 'Identify the underlined part that is grammatically incorrect.'
+  }
+}
+
+// Get instructions for reading section
+export function getReadingInstruction(): string {
+  return 'Read the passage carefully and answer the questions based on the information provided.'
+}
