@@ -14,6 +14,104 @@ interface DetailedResult {
   section: string
   question_number: number
   question_text: string
+  part?: number // for listening
+}
+
+interface PartAnalysis {
+  correct: number
+  total: number
+  percentage: number
+}
+
+interface SectionAnalysis {
+  listening: {
+    partA: PartAnalysis
+    partB: PartAnalysis
+    partC: PartAnalysis
+  }
+  structure: {
+    sentenceCompletion: PartAnalysis
+    errorIdentification: PartAnalysis
+  }
+  reading: {
+    byPassage: { [key: number]: PartAnalysis }
+  }
+}
+
+// Analyze performance by parts
+function analyzeByParts(detailedResults: Record<string, DetailedResult> | undefined): SectionAnalysis {
+  if (!detailedResults) {
+    return {
+      listening: {
+        partA: { correct: 0, total: 0, percentage: 0 },
+        partB: { correct: 0, total: 0, percentage: 0 },
+        partC: { correct: 0, total: 0, percentage: 0 },
+      },
+      structure: {
+        sentenceCompletion: { correct: 0, total: 0, percentage: 0 },
+        errorIdentification: { correct: 0, total: 0, percentage: 0 },
+      },
+      reading: {
+        byPassage: {},
+      },
+    }
+  }
+
+  const results = Object.values(detailedResults)
+
+  // Listening analysis by part
+  const listeningPartA = results.filter(r => r.section === 'listening' && r.part === 1)
+  const listeningPartB = results.filter(r => r.section === 'listening' && r.part === 2)
+  const listeningPartC = results.filter(r => r.section === 'listening' && r.part === 3)
+
+  // Structure analysis by type
+  const sentenceCompletion = results.filter(r => r.section === 'structure' && r.question_number <= 25)
+  const errorIdentification = results.filter(r => r.section === 'structure' && r.question_number > 25)
+
+  // Reading analysis by passage (every 5 questions = 1 passage)
+  const readingByPassage: { [key: number]: PartAnalysis } = {}
+  const readingResults = results.filter(r => r.section === 'reading')
+  
+  readingResults.forEach(r => {
+    const passageNum = Math.ceil(r.question_number / 5)
+    if (!readingByPassage[passageNum]) {
+      readingByPassage[passageNum] = { correct: 0, total: 0, percentage: 0 }
+    }
+    readingByPassage[passageNum].total++
+    if (r.correct) readingByPassage[passageNum].correct++
+  })
+
+  // Calculate percentages
+  Object.keys(readingByPassage).forEach(key => {
+    const num = parseInt(key)
+    readingByPassage[num].percentage = 
+      (readingByPassage[num].correct / readingByPassage[num].total) * 100
+  })
+
+  const calcStats = (items: DetailedResult[]): PartAnalysis => {
+    const correct = items.filter(r => r.correct).length
+    const total = items.length
+    return {
+      correct,
+      total,
+      percentage: total > 0 ? (correct / total) * 100 : 0,
+    }
+  }
+
+  return {
+    listening: {
+      partA: calcStats(listeningPartA),
+      partB: calcStats(listeningPartB),
+      partC: calcStats(listeningPartC),
+    },
+    structure: {
+      sentenceCompletion: calcStats(sentenceCompletion),
+      errorIdentification: calcStats(errorIdentification),
+    },
+    reading: {
+      byPassage: readingByPassage,
+    },
+  }
 }
 
 interface ResultData {
@@ -130,6 +228,9 @@ export default function ResultPage({ params }: { params: Promise<{ resultId: str
   const listeningPercentage = (result.listening_correct / SECTION_QUESTIONS.listening) * 100
   const structurePercentage = (result.structure_correct / SECTION_QUESTIONS.structure) * 100
   const readingPercentage = (result.reading_correct / SECTION_QUESTIONS.reading) * 100
+
+  // Calculate detailed part analysis
+  const partAnalysis = analyzeByParts(result.detailed_results)
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-indigo-50">
@@ -387,6 +488,298 @@ export default function ResultPage({ params }: { params: Promise<{ resultId: str
                 </div>
               </div>
             </div>
+
+            {/* Detailed Part-by-Part Breakdown */}
+            {showDetailedAnalysis && partAnalysis && (
+              <div className="mt-8 pt-8 border-t border-gray-200">
+                <h4 className="font-bold text-gray-900 mb-6 flex items-center gap-2">
+                  <span className="text-xl">🎯</span>
+                  Detailed Part-by-Part Analysis
+                </h4>
+
+                {/* Listening Parts */}
+                <div className="mb-6">
+                  <h5 className="font-semibold text-blue-600 mb-4 flex items-center gap-2">
+                    🎧 Listening Comprehension Parts
+                  </h5>
+                  <div className="grid md:grid-cols-3 gap-4">
+                    {/* Part A */}
+                    <div className="bg-white border-2 border-blue-200 rounded-lg p-4">
+                      <div className="flex justify-between items-center mb-2">
+                        <span className="font-medium text-gray-900">Part A</span>
+                        <span className={`text-sm font-semibold ${
+                          partAnalysis.listening.partA.percentage >= 80 ? 'text-green-600' :
+                          partAnalysis.listening.partA.percentage >= 60 ? 'text-yellow-600' :
+                          'text-red-600'
+                        }`}>
+                          {partAnalysis.listening.partA.percentage.toFixed(0)}%
+                        </span>
+                      </div>
+                      <div className="text-xs text-gray-600 mb-2">
+                        Short Conversations
+                      </div>
+                      <div className="text-sm text-gray-700 mb-2">
+                        {partAnalysis.listening.partA.correct} / {partAnalysis.listening.partA.total} correct
+                      </div>
+                      <div className="w-full bg-gray-200 rounded-full h-2 overflow-hidden">
+                        <div 
+                          className={`h-full rounded-full ${
+                            partAnalysis.listening.partA.percentage >= 80 ? 'bg-green-500' :
+                            partAnalysis.listening.partA.percentage >= 60 ? 'bg-yellow-500' :
+                            'bg-red-500'
+                          }`}
+                          style={{ width: `${partAnalysis.listening.partA.percentage}%` }}
+                        ></div>
+                      </div>
+                      {partAnalysis.listening.partA.percentage < 60 && (
+                        <p className="text-xs text-red-600 mt-2">⚠️ Needs improvement</p>
+                      )}
+                    </div>
+
+                    {/* Part B */}
+                    <div className="bg-white border-2 border-blue-200 rounded-lg p-4">
+                      <div className="flex justify-between items-center mb-2">
+                        <span className="font-medium text-gray-900">Part B</span>
+                        <span className={`text-sm font-semibold ${
+                          partAnalysis.listening.partB.percentage >= 80 ? 'text-green-600' :
+                          partAnalysis.listening.partB.percentage >= 60 ? 'text-yellow-600' :
+                          'text-red-600'
+                        }`}>
+                          {partAnalysis.listening.partB.percentage.toFixed(0)}%
+                        </span>
+                      </div>
+                      <div className="text-xs text-gray-600 mb-2">
+                        Longer Conversations
+                      </div>
+                      <div className="text-sm text-gray-700 mb-2">
+                        {partAnalysis.listening.partB.correct} / {partAnalysis.listening.partB.total} correct
+                      </div>
+                      <div className="w-full bg-gray-200 rounded-full h-2 overflow-hidden">
+                        <div 
+                          className={`h-full rounded-full ${
+                            partAnalysis.listening.partB.percentage >= 80 ? 'bg-green-500' :
+                            partAnalysis.listening.partB.percentage >= 60 ? 'bg-yellow-500' :
+                            'bg-red-500'
+                          }`}
+                          style={{ width: `${partAnalysis.listening.partB.percentage}%` }}
+                        ></div>
+                      </div>
+                      {partAnalysis.listening.partB.percentage < 60 && (
+                        <p className="text-xs text-red-600 mt-2">⚠️ Needs improvement</p>
+                      )}
+                    </div>
+
+                    {/* Part C */}
+                    <div className="bg-white border-2 border-blue-200 rounded-lg p-4">
+                      <div className="flex justify-between items-center mb-2">
+                        <span className="font-medium text-gray-900">Part C</span>
+                        <span className={`text-sm font-semibold ${
+                          partAnalysis.listening.partC.percentage >= 80 ? 'text-green-600' :
+                          partAnalysis.listening.partC.percentage >= 60 ? 'text-yellow-600' :
+                          'text-red-600'
+                        }`}>
+                          {partAnalysis.listening.partC.percentage.toFixed(0)}%
+                        </span>
+                      </div>
+                      <div className="text-xs text-gray-600 mb-2">
+                        Talks & Lectures
+                      </div>
+                      <div className="text-sm text-gray-700 mb-2">
+                        {partAnalysis.listening.partC.correct} / {partAnalysis.listening.partC.total} correct
+                      </div>
+                      <div className="w-full bg-gray-200 rounded-full h-2 overflow-hidden">
+                        <div 
+                          className={`h-full rounded-full ${
+                            partAnalysis.listening.partC.percentage >= 80 ? 'bg-green-500' :
+                            partAnalysis.listening.partC.percentage >= 60 ? 'bg-yellow-500' :
+                            'bg-red-500'
+                          }`}
+                          style={{ width: `${partAnalysis.listening.partC.percentage}%` }}
+                        ></div>
+                      </div>
+                      {partAnalysis.listening.partC.percentage < 60 && (
+                        <p className="text-xs text-red-600 mt-2">⚠️ Needs improvement</p>
+                      )}
+                    </div>
+                  </div>
+                </div>
+
+                {/* Structure Types */}
+                <div className="mb-6">
+                  <h5 className="font-semibold text-green-600 mb-4 flex items-center gap-2">
+                    ✍️ Structure & Written Expression Types
+                  </h5>
+                  <div className="grid md:grid-cols-2 gap-4">
+                    {/* Sentence Completion */}
+                    <div className="bg-white border-2 border-green-200 rounded-lg p-4">
+                      <div className="flex justify-between items-center mb-2">
+                        <span className="font-medium text-gray-900">Sentence Completion</span>
+                        <span className={`text-sm font-semibold ${
+                          partAnalysis.structure.sentenceCompletion.percentage >= 80 ? 'text-green-600' :
+                          partAnalysis.structure.sentenceCompletion.percentage >= 60 ? 'text-yellow-600' :
+                          'text-red-600'
+                        }`}>
+                          {partAnalysis.structure.sentenceCompletion.percentage.toFixed(0)}%
+                        </span>
+                      </div>
+                      <div className="text-xs text-gray-600 mb-2">
+                        Questions 1-25
+                      </div>
+                      <div className="text-sm text-gray-700 mb-2">
+                        {partAnalysis.structure.sentenceCompletion.correct} / {partAnalysis.structure.sentenceCompletion.total} correct
+                      </div>
+                      <div className="w-full bg-gray-200 rounded-full h-2 overflow-hidden">
+                        <div 
+                          className={`h-full rounded-full ${
+                            partAnalysis.structure.sentenceCompletion.percentage >= 80 ? 'bg-green-500' :
+                            partAnalysis.structure.sentenceCompletion.percentage >= 60 ? 'bg-yellow-500' :
+                            'bg-red-500'
+                          }`}
+                          style={{ width: `${partAnalysis.structure.sentenceCompletion.percentage}%` }}
+                        ></div>
+                      </div>
+                      {partAnalysis.structure.sentenceCompletion.percentage < 60 && (
+                        <p className="text-xs text-red-600 mt-2">⚠️ Focus on sentence structure patterns</p>
+                      )}
+                    </div>
+
+                    {/* Error Identification */}
+                    <div className="bg-white border-2 border-green-200 rounded-lg p-4">
+                      <div className="flex justify-between items-center mb-2">
+                        <span className="font-medium text-gray-900">Error Identification</span>
+                        <span className={`text-sm font-semibold ${
+                          partAnalysis.structure.errorIdentification.percentage >= 80 ? 'text-green-600' :
+                          partAnalysis.structure.errorIdentification.percentage >= 60 ? 'text-yellow-600' :
+                          'text-red-600'
+                        }`}>
+                          {partAnalysis.structure.errorIdentification.percentage.toFixed(0)}%
+                        </span>
+                      </div>
+                      <div className="text-xs text-gray-600 mb-2">
+                        Questions 26-75
+                      </div>
+                      <div className="text-sm text-gray-700 mb-2">
+                        {partAnalysis.structure.errorIdentification.correct} / {partAnalysis.structure.errorIdentification.total} correct
+                      </div>
+                      <div className="w-full bg-gray-200 rounded-full h-2 overflow-hidden">
+                        <div 
+                          className={`h-full rounded-full ${
+                            partAnalysis.structure.errorIdentification.percentage >= 80 ? 'bg-green-500' :
+                            partAnalysis.structure.errorIdentification.percentage >= 60 ? 'bg-yellow-500' :
+                            'bg-red-500'
+                          }`}
+                          style={{ width: `${partAnalysis.structure.errorIdentification.percentage}%` }}
+                        ></div>
+                      </div>
+                      {partAnalysis.structure.errorIdentification.percentage < 60 && (
+                        <p className="text-xs text-red-600 mt-2">⚠️ Practice spotting grammar errors</p>
+                      )}
+                    </div>
+                  </div>
+                </div>
+
+                {/* Reading Passages */}
+                <div className="mb-6">
+                  <h5 className="font-semibold text-purple-600 mb-4 flex items-center gap-2">
+                    📚 Reading Comprehension by Passage
+                  </h5>
+                  <div className="grid md:grid-cols-5 gap-3">
+                    {Object.entries(partAnalysis.reading.byPassage)
+                      .sort(([a], [b]) => parseInt(a) - parseInt(b))
+                      .map(([passageNum, stats]) => (
+                      <div key={passageNum} className="bg-white border-2 border-purple-200 rounded-lg p-3">
+                        <div className="flex justify-between items-center mb-2">
+                          <span className="font-medium text-gray-900 text-sm">Passage {passageNum}</span>
+                          <span className={`text-xs font-semibold ${
+                            stats.percentage >= 80 ? 'text-green-600' :
+                            stats.percentage >= 60 ? 'text-yellow-600' :
+                            'text-red-600'
+                          }`}>
+                            {stats.percentage.toFixed(0)}%
+                          </span>
+                        </div>
+                        <div className="text-xs text-gray-700 mb-2">
+                          {stats.correct} / {stats.total}
+                        </div>
+                        <div className="w-full bg-gray-200 rounded-full h-1.5 overflow-hidden">
+                          <div 
+                            className={`h-full rounded-full ${
+                              stats.percentage >= 80 ? 'bg-green-500' :
+                              stats.percentage >= 60 ? 'bg-yellow-500' :
+                              'bg-red-500'
+                            }`}
+                            style={{ width: `${stats.percentage}%` }}
+                          ></div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Weak Areas Summary */}
+                <div className="bg-red-50 border-2 border-red-200 rounded-lg p-4">
+                  <h5 className="font-semibold text-red-700 mb-3 flex items-center gap-2">
+                    ⚠️ Areas Requiring Focus
+                  </h5>
+                  <div className="space-y-2 text-sm">
+                    {/* Check Listening weak parts */}
+                    {partAnalysis.listening.partA.percentage < 60 && (
+                      <p className="text-gray-700">
+                        • <strong>Listening Part A (Short Conversations):</strong> Practice understanding brief dialogues and identifying key information quickly.
+                      </p>
+                    )}
+                    {partAnalysis.listening.partB.percentage < 60 && (
+                      <p className="text-gray-700">
+                        • <strong>Listening Part B (Longer Conversations):</strong> Work on maintaining focus during extended dialogues and tracking multiple speakers.
+                      </p>
+                    )}
+                    {partAnalysis.listening.partC.percentage < 60 && (
+                      <p className="text-gray-700">
+                        • <strong>Listening Part C (Talks & Lectures):</strong> Improve note-taking skills and focus on main ideas in academic contexts.
+                      </p>
+                    )}
+                    
+                    {/* Check Structure weak types */}
+                    {partAnalysis.structure.sentenceCompletion.percentage < 60 && (
+                      <p className="text-gray-700">
+                        • <strong>Sentence Completion:</strong> Review grammar rules, sentence patterns, and practice completing sentences with appropriate structures.
+                      </p>
+                    )}
+                    {partAnalysis.structure.errorIdentification.percentage < 60 && (
+                      <p className="text-gray-700">
+                        • <strong>Error Identification:</strong> Focus on spotting common grammar mistakes in verb tenses, subject-verb agreement, and word forms.
+                      </p>
+                    )}
+
+                    {/* Check Reading weak passages */}
+                    {Object.entries(partAnalysis.reading.byPassage)
+                      .filter(([, stats]) => stats.percentage < 60)
+                      .length > 0 && (
+                      <p className="text-gray-700">
+                        • <strong>Reading Passages {
+                          Object.entries(partAnalysis.reading.byPassage)
+                            .filter(([, stats]) => stats.percentage < 60)
+                            .map(([num]) => num)
+                            .join(', ')
+                        }:</strong> Review these passages carefully and practice similar text types and question formats.
+                      </p>
+                    )}
+
+                    {/* If no weak areas */}
+                    {partAnalysis.listening.partA.percentage >= 60 &&
+                     partAnalysis.listening.partB.percentage >= 60 &&
+                     partAnalysis.listening.partC.percentage >= 60 &&
+                     partAnalysis.structure.sentenceCompletion.percentage >= 60 &&
+                     partAnalysis.structure.errorIdentification.percentage >= 60 &&
+                     Object.values(partAnalysis.reading.byPassage).every(stats => stats.percentage >= 60) && (
+                      <p className="text-green-700 font-semibold">
+                        ✅ Great job! All sections show good performance. Continue practicing to maintain and improve your skills.
+                      </p>
+                    )}
+                  </div>
+                </div>
+              </div>
+            )}
 
             {/* Detailed Question-by-Question Analysis */}
             {showDetailedAnalysis && result.detailed_results && (
