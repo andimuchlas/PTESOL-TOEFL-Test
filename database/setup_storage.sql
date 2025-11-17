@@ -7,13 +7,21 @@ VALUES ('ptesol-audio', 'ptesol-audio', true)
 ON CONFLICT (id) DO NOTHING;
 
 -- 2. Set bucket policies untuk public access
+-- Public read access
 CREATE POLICY "Public Access for Audio"
 ON storage.objects FOR SELECT
 USING (bucket_id = 'ptesol-audio');
 
-CREATE POLICY "Authenticated users can upload audio"
+-- Allow anyone to upload (including anon key)
+CREATE POLICY "Anyone can upload audio"
 ON storage.objects FOR INSERT
-WITH CHECK (bucket_id = 'ptesol-audio' AND auth.role() = 'authenticated');
+WITH CHECK (bucket_id = 'ptesol-audio');
+
+-- Allow anyone to update existing files
+CREATE POLICY "Anyone can update audio"
+ON storage.objects FOR UPDATE
+USING (bucket_id = 'ptesol-audio')
+WITH CHECK (bucket_id = 'ptesol-audio');
 
 -- 3. Template SQL untuk update audio URLs setelah upload
 -- Ganti YOUR_SUPABASE_URL dengan URL project Anda

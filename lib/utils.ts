@@ -79,3 +79,27 @@ export function getScoreLevel(score: number): { level: string; color: string; de
     }
   }
 }
+
+// Get part name and instructions for listening section
+export function getListeningPartInfo(part: number | null): { name: string; instruction: string } {
+  if (part === 1) {
+    return {
+      name: 'Part A: Short Conversations',
+      instruction: 'Listen to short conversations between two people and answer questions about what they say.'
+    }
+  } else if (part === 2) {
+    return {
+      name: 'Part B: Longer Conversations',
+      instruction: 'Listen to longer conversations and answer multiple questions about each conversation.'
+    }
+  } else if (part === 3) {
+    return {
+      name: 'Part C: Talks & Lectures',
+      instruction: 'Listen to talks or academic lectures and answer questions about the content.'
+    }
+  }
+  return {
+    name: '',
+    instruction: ''
+  }
+}

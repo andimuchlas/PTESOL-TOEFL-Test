@@ -2,7 +2,7 @@
 
 ![Next.js](https://img.shields.io/badge/Next.js-14-black) ![TypeScript](https://img.shields.io/badge/TypeScript-5-blue) ![Supabase](https://img.shields.io/badge/Supabase-PostgreSQL-green)
 
-Aplikasi web untuk tes kemampuan bahasa Inggris yang dikembangkan oleh Balai Bahasa Universitas Pendidikan Indonesia (UPI). PTESOL adalah tes prediksi TOEFL dengan format mirip TOEFL ITP.
+Aplikasi web untuk tes kemampuan bahasa Inggris dengan format mirip TOEFL ITP. PTESOL (Pelatihan Tes Bahasa Inggris Standar Online) adalah platform tes komprehensif yang mencakup Listening Comprehension, Structure & Written Expression, dan Reading Comprehension.
 
 ## 🎯 Fitur Utama
 
@@ -114,4 +114,4 @@ MIT License
 
 ---
 
-**© 2025 PTESOL - Balai Bahasa UPI**
+**© 2025 PTESOL**

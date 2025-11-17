@@ -14,7 +14,7 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   title: "PTESOL - Pelatihan Tes Bahasa Inggris Standar Online",
-  description: "Tes kemampuan bahasa Inggris yang dikembangkan oleh Balai Bahasa UPI",
+  description: "Comprehensive English proficiency test with TOEFL-style format",
 };
 
 export default function RootLayout({

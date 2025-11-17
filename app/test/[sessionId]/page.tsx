@@ -4,7 +4,7 @@ import { use, useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { useTestStore } from '@/lib/store'
 import { submitTestResults } from '@/app/actions'
-import { SECTION_TIME_LIMITS, SECTION_QUESTIONS, SECTION_NAMES, formatTime } from '@/lib/utils'
+import { SECTION_TIME_LIMITS, SECTION_QUESTIONS, SECTION_NAMES, formatTime, getListeningPartInfo } from '@/lib/utils'
 import { Clock, ChevronLeft, ChevronRight, CheckCircle, AlertCircle } from 'lucide-react'
 
 export default function TestPage({ params }: { params: Promise<{ sessionId: string }> }) {
@@ -176,21 +176,51 @@ export default function TestPage({ params }: { params: Promise<{ sessionId: stri
       {/* Main Content */}
       <main className="container mx-auto px-4 py-8">
         <div className="mx-auto max-w-4xl">
+          {/* Section Instructions - Only show for listening with parts */}
+          {currentSection === 'listening' && currentQuestion.part && (
+            <div className="bg-gradient-to-r from-purple-50 to-blue-50 border border-purple-200 rounded-xl p-4 mb-6 shadow-sm">
+              <div className="flex items-start gap-3">
+                <svg className="h-5 w-5 text-purple-600 mt-0.5 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+                <div>
+                  <h3 className="font-semibold text-purple-900 text-sm mb-1">
+                    {getListeningPartInfo(currentQuestion.part).name}
+                  </h3>
+                  <p className="text-sm text-purple-700">
+                    {getListeningPartInfo(currentQuestion.part).instruction}
+                  </p>
+                </div>
+              </div>
+            </div>
+          )}
+
           <div className="bg-white rounded-xl shadow-lg p-6 md:p-8">
-            {/* Question Number */}
-            <div className="mb-6">
+            {/* Question Number & Part Info */}
+            <div className="mb-6 flex items-center gap-3 flex-wrap">
               <span className="inline-block px-3 py-1 bg-blue-100 text-blue-700 rounded-full text-sm font-semibold">
                 Question {currentQuestionIndex + 1}
               </span>
+              {currentSection === 'listening' && currentQuestion.part && (
+                <span className="inline-block px-3 py-1 bg-purple-100 text-purple-700 rounded-full text-xs font-semibold">
+                  {currentQuestion.part === 1 && 'Part A: Short Conversations'}
+                  {currentQuestion.part === 2 && 'Part B: Longer Conversations'}
+                  {currentQuestion.part === 3 && 'Part C: Talks & Lectures'}
+                </span>
+              )}
             </div>
 
             {/* Question Text */}
             <div className="mb-8">
-              <p className="text-lg text-gray-900 leading-relaxed">
-                {currentQuestion.question_text}
-              </p>
-              {currentQuestion.audio_url && (
-                <div className="mt-4">
+              {/* Audio player - ONLY for listening section */}
+              {currentSection === 'listening' && currentQuestion.audio_url && (
+                <div className="mb-4 bg-blue-50 border border-blue-200 rounded-lg p-4">
+                  <div className="flex items-center gap-2 mb-2">
+                    <svg className="h-5 w-5 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z" />
+                    </svg>
+                    <span className="text-sm font-semibold text-blue-700">Listen to the audio:</span>
+                  </div>
                   <audio 
                     key={currentQuestion.id} 
                     controls 
@@ -202,6 +232,9 @@ export default function TestPage({ params }: { params: Promise<{ sessionId: stri
                   </audio>
                 </div>
               )}
+              <p className="text-lg text-gray-900 leading-relaxed">
+                {currentQuestion.question_text}
+              </p>
             </div>
 
             {/* Answer Options */}

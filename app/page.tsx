@@ -65,7 +65,7 @@ export default function Home() {
               <BookOpen className="h-8 w-8 text-blue-600" />
               <div>
                 <h1 className="text-2xl font-bold text-gray-900">PTESOL</h1>
-                <p className="text-xs text-gray-600">Balai Bahasa UPI</p>
+                <p className="text-xs text-gray-600">English Proficiency Test</p>
               </div>
             </div>
             <Link 
@@ -88,8 +88,7 @@ export default function Home() {
               Pelatihan Tes Bahasa Inggris Standar Online
             </h2>
             <p className="text-lg text-gray-700 max-w-2xl mx-auto">
-              Tes kemampuan bahasa Inggris yang dikembangkan oleh Balai Bahasa 
-              Universitas Pendidikan Indonesia (UPI) di Bandung
+              Comprehensive English proficiency test with TOEFL-style format covering Listening, Structure, and Reading Comprehension
             </p>
           </div>
 
