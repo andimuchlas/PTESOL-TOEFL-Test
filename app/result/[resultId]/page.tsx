@@ -683,7 +683,7 @@ export default function ResultPage({ params }: { params: Promise<{ resultId: str
                   <h5 className="font-semibold text-purple-600 mb-4 flex items-center gap-2">
                     📚 Reading Comprehension by Passage
                   </h5>
-                  <div className="grid md:grid-cols-5 gap-3">
+                  <div className="grid grid-cols-2 md:grid-cols-5 gap-3">
                     {Object.entries(partAnalysis.reading.byPassage)
                       .sort(([a], [b]) => parseInt(a) - parseInt(b))
                       .map(([passageNum, stats]) => (

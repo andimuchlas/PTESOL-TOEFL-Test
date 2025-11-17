@@ -113,13 +113,8 @@ export default function TestPage({ params }: { params: Promise<{ sessionId: stri
 
       console.log('Test submitted successfully, result ID:', result.id)
       
-      // Navigate to result page - user can click "Back to Home" button there
+      // Navigate to result page - user stays there and can click "Back to Home" button
       router.push(`/result/${result.id}`)
-      
-      // Reset test after navigation completes (when user leaves result page)
-      setTimeout(() => {
-        resetTest()
-      }, 500)
     } catch (error) {
       console.error('Error submitting test:', error)
       alert('Failed to submit test. Please try again.')

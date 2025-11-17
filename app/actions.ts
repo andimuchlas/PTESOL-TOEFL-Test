@@ -10,7 +10,7 @@ export async function getRandomQuestions() {
       .rpc('get_random_questions', { p_section: 'listening', p_limit: 50 })
     
     const { data: structureQuestions, error: structureError } = await supabase
-      .rpc('get_random_questions', { p_section: 'structure', p_limit: 25 })
+      .rpc('get_random_questions', { p_section: 'structure', p_limit: 40 })
     
     if (listeningError || structureError) {
       throw new Error('Failed to fetch listening or structure questions')
@@ -37,7 +37,7 @@ export async function getRandomQuestions() {
       }
     }
 
-    // Randomly select 5 passages (5 passages × 5 questions = 25 questions)
+    // Randomly select 10 passages (10 passages × 5 questions = 50 questions)
     const selectedPassages: any[] = []
     const passageIndices = Array.from({ length: passages.length }, (_, i) => i)
     
@@ -47,8 +47,8 @@ export async function getRandomQuestions() {
       [passageIndices[i], passageIndices[j]] = [passageIndices[j], passageIndices[i]]
     }
     
-    // Take first 5 passages
-    for (let i = 0; i < 5 && i < passageIndices.length; i++) {
+    // Take first 10 passages
+    for (let i = 0; i < 10 && i < passageIndices.length; i++) {
       selectedPassages.push(...passages[passageIndices[i]])
     }
 

@@ -15,11 +15,11 @@ Aplikasi web untuk tes kemampuan bahasa Inggris dengan format mirip TOEFL ITP. P
 
 ## 📋 Format Tes
 
-**3 Sections - 100 Questions Total (randomly selected from larger pool)**
+**3 Sections - 140 Questions Total (randomly selected from larger pool)**
 
 1. **Listening Comprehension** (50 soal, 35 menit) - dari 180 soal
-2. **Structure and Written Expression** (25 soal, 25 menit) - dari 75 soal
-3. **Reading Comprehension** (25 soal, 55 menit) - dari 75 soal
+2. **Structure and Written Expression** (40 soal, 25 menit) - dari 75 soal
+3. **Reading Comprehension** (50 soal, 55 menit) - dari 75 soal (10 passages × 5 questions)
 
 **Total Question Bank: 330 Questions**
 **Score Range: 217-677**

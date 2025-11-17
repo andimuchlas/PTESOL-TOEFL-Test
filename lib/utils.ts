@@ -8,12 +8,12 @@ export const SECTION_TIME_LIMITS = {
 // Number of questions per section (randomly selected from larger question bank)
 export const SECTION_QUESTIONS = {
   listening: 50,  // selected from 180 total
-  structure: 25,  // selected from 75 total
-  reading: 25,    // selected from 75 total
+  structure: 40,  // selected from 75 total
+  reading: 50,    // selected from 75 total
 }
 
 // Total questions in a test
-export const TOTAL_QUESTIONS = 100
+export const TOTAL_QUESTIONS = 140
 
 // Score range
 export const MIN_SCORE = 217
