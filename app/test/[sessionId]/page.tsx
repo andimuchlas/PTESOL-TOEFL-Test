@@ -273,16 +273,25 @@ export default function TestPage({ params }: { params: Promise<{ sessionId: stri
               
               {/* Passage text - ONLY for reading section */}
               {currentSection === 'reading' && currentQuestion.passage_text && (
-                <div className="mb-6 bg-gray-50 border border-gray-200 rounded-lg p-6">
-                  <div className="prose prose-sm max-w-none text-gray-800 leading-relaxed whitespace-pre-line">
-                    {currentQuestion.passage_text}
+                <div className="mb-6 bg-gradient-to-br from-gray-50 to-blue-50 border-2 border-blue-200 rounded-xl p-6 shadow-sm">
+                  <div className="flex items-center gap-2 mb-3 pb-2 border-b border-blue-200">
+                    <svg className="h-5 w-5 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
+                    </svg>
+                    <span className="font-semibold text-blue-900 text-sm">Reading Passage</span>
+                  </div>
+                  <div className="prose prose-sm max-w-none text-gray-700 leading-relaxed">
+                    {currentQuestion.passage_text.split('\n\n').map((paragraph: string, idx: number) => (
+                      <p key={idx} className="mb-3 text-justify">{paragraph}</p>
+                    ))}
                   </div>
                 </div>
               )}
               
-              <p className="text-lg text-gray-900 leading-relaxed">
-                {currentQuestion.question_text}
-              </p>
+              <p 
+                className="text-lg text-gray-900 leading-relaxed"
+                dangerouslySetInnerHTML={{ __html: currentQuestion.question_text }}
+              />
             </div>
 
             {/* Answer Options */}
@@ -290,7 +299,6 @@ export default function TestPage({ params }: { params: Promise<{ sessionId: stri
               {['a', 'b', 'c', 'd'].map((option) => {
                 const optionText = currentQuestion[`option_${option}` as keyof typeof currentQuestion]
                 const isSelected = answers[currentQuestion.id] === option
-                const isErrorIdentification = currentSection === 'structure' && currentQuestion.question_number > 15
 
                 return (
                   <button
@@ -310,9 +318,7 @@ export default function TestPage({ params }: { params: Promise<{ sessionId: stri
                       }`}>
                         {option.toUpperCase()}
                       </span>
-                      <span className={`text-gray-900 pt-1 ${isErrorIdentification ? 'underline decoration-2 decoration-blue-500' : ''}`}>
-                        {optionText}
-                      </span>
+                      <span className="text-gray-900 pt-1">{optionText}</span>
                     </div>
                   </button>
                 )
