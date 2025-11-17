@@ -191,8 +191,13 @@ export default function TestPage({ params }: { params: Promise<{ sessionId: stri
               </p>
               {currentQuestion.audio_url && (
                 <div className="mt-4">
-                  <audio controls className="w-full">
-                    <source src={currentQuestion.audio_url} type="audio/mpeg" />
+                  <audio 
+                    key={currentQuestion.id} 
+                    controls 
+                    className="w-full"
+                    preload="auto"
+                  >
+                    <source src={currentQuestion.audio_url} type="audio/wav" />
                     Your browser does not support the audio element.
                   </audio>
                 </div>
