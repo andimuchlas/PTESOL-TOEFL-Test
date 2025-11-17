@@ -1,0 +1,60 @@
+-- PTESOL LISTENING COMPREHENSION QUESTIONS (50 soal)
+-- Note: Audio URLs perlu ditambahkan nanti, untuk sekarang NULL
+
+INSERT INTO questions (section, part, question_number, question_text, audio_url, option_a, option_b, option_c, option_d, correct_answer) VALUES
+
+-- PART A: Short Conversations (1-30)
+('listening', 1, 1, 'What does the man mean?', NULL, 'He will attend the meeting', 'He cannot make it to the meeting', 'He is organizing the meeting', 'He forgot about the meeting', 'b'),
+('listening', 1, 2, 'What does the woman suggest they do?', NULL, 'Go to the library', 'Study at home', 'Take a break', 'Go to the cafeteria', 'a'),
+('listening', 1, 3, 'What is the man''s problem?', NULL, 'He lost his textbook', 'He cannot find the classroom', 'He missed the deadline', 'He forgot his assignment', 'c'),
+('listening', 1, 4, 'Where does this conversation probably take place?', NULL, 'At a restaurant', 'At a bookstore', 'At a library', 'At a bank', 'b'),
+('listening', 1, 5, 'What does the woman imply about the course?', NULL, 'It is too difficult', 'It is very interesting', 'It requires too much reading', 'It meets too often', 'c'),
+('listening', 1, 6, 'What will the man probably do next?', NULL, 'Call his professor', 'Go to the library', 'Write his paper', 'Attend a lecture', 'b'),
+('listening', 1, 7, 'What does the woman mean?', NULL, 'She agrees with the man', 'She disagrees with the man', 'She is unsure', 'She needs more information', 'a'),
+('listening', 1, 8, 'What can be inferred about the woman?', NULL, 'She is a biology major', 'She is taking too many courses', 'She enjoys her classes', 'She is graduating this semester', 'b'),
+('listening', 1, 9, 'What does the man suggest?', NULL, 'Postponing the meeting', 'Canceling the reservation', 'Changing the location', 'Inviting more people', 'a'),
+('listening', 1, 10, 'Why is the woman going to the bookstore?', NULL, 'To buy textbooks', 'To return a book', 'To meet a friend', 'To study', 'b'),
+('listening', 1, 11, 'What does the man imply?', NULL, 'The exam was easy', 'He did not study enough', 'The exam was unfair', 'He is confident about his grade', 'b'),
+('listening', 1, 12, 'What are the speakers mainly discussing?', NULL, 'A research project', 'A class assignment', 'A job opportunity', 'A university policy', 'a'),
+('listening', 1, 13, 'What does the woman mean when she says, "I wish I had known"?', NULL, 'She would have acted differently', 'She is happy with her decision', 'She wants to know more', 'She regrets her choice', 'a'),
+('listening', 1, 14, 'What is the man''s attitude toward the proposal?', NULL, 'Enthusiastic', 'Skeptical', 'Neutral', 'Confused', 'b'),
+('listening', 1, 15, 'What will the woman probably do?', NULL, 'Register for the course', 'Drop the course', 'Talk to the professor', 'Change her major', 'c'),
+('listening', 1, 16, 'What does the man imply about the assignment?', NULL, 'It is too long', 'It is interesting', 'It is confusing', 'It is easy', 'c'),
+('listening', 1, 17, 'Why does the woman mention her roommate?', NULL, 'To offer help', 'To explain her situation', 'To make a comparison', 'To change the subject', 'b'),
+('listening', 1, 18, 'What can be inferred about the man?', NULL, 'He is well-prepared', 'He is nervous', 'He is confident', 'He is late', 'b'),
+('listening', 1, 19, 'What does the woman suggest the man do?', NULL, 'Talk to his advisor', 'Change his schedule', 'Drop a course', 'Study harder', 'a'),
+('listening', 1, 20, 'What is the main topic of the conversation?', NULL, 'Housing options', 'Transportation issues', 'Academic requirements', 'Financial aid', 'a'),
+('listening', 1, 21, 'What does the man mean?', NULL, 'He agrees to help', 'He is too busy', 'He does not understand', 'He will think about it', 'b'),
+('listening', 1, 22, 'What does the woman imply about the professor?', NULL, 'He is helpful', 'He is strict', 'He is unavailable', 'He is new', 'a'),
+('listening', 1, 23, 'What will the speakers probably do next?', NULL, 'Go to the library', 'Eat lunch', 'Attend class', 'Study together', 'd'),
+('listening', 1, 24, 'What is the woman''s problem?', NULL, 'She cannot find her notes', 'She missed a class', 'She does not understand the assignment', 'She lost her textbook', 'c'),
+('listening', 1, 25, 'What does the man suggest?', NULL, 'Taking a different course', 'Talking to the instructor', 'Forming a study group', 'Using the writing center', 'd'),
+('listening', 1, 26, 'What can be inferred about the woman?', NULL, 'She is a graduate student', 'She works part-time', 'She lives on campus', 'She is an international student', 'b'),
+('listening', 1, 27, 'What does the man mean?', NULL, 'He will help the woman', 'He cannot attend the meeting', 'He needs more time', 'He forgot the appointment', 'c'),
+('listening', 1, 28, 'What are the speakers discussing?', NULL, 'A research paper', 'A lab experiment', 'A class presentation', 'A final exam', 'c'),
+('listening', 1, 29, 'What does the woman imply?', NULL, 'She needs to check her schedule', 'She is not interested', 'She will definitely attend', 'She has other plans', 'a'),
+('listening', 1, 30, 'What will the man probably do?', NULL, 'Revise his paper', 'Submit his assignment', 'Talk to his professor', 'Do more research', 'a'),
+
+-- PART B: Longer Conversations (31-38)
+('listening', 2, 31, 'What is the main purpose of the conversation?', NULL, 'To discuss a research project', 'To plan a class presentation', 'To review for an exam', 'To arrange a tutoring session', 'a'),
+('listening', 2, 32, 'According to the professor, what is the main challenge of the research?', NULL, 'Finding reliable sources', 'Managing time effectively', 'Analyzing the data', 'Writing the conclusion', 'c'),
+('listening', 2, 33, 'What does the student need to do before the next meeting?', NULL, 'Write a draft', 'Collect more data', 'Read additional articles', 'Create an outline', 'd'),
+('listening', 2, 34, 'Why does the professor mention the library database?', NULL, 'To recommend resources', 'To explain a requirement', 'To solve a problem', 'To give an example', 'a'),
+('listening', 2, 35, 'What is the woman''s opinion about the course?', NULL, 'It is too demanding', 'It is very helpful', 'It lacks structure', 'It needs improvement', 'b'),
+('listening', 2, 36, 'What will the students discuss in their next class?', NULL, 'Research methods', 'Statistical analysis', 'Writing techniques', 'Presentation skills', 'b'),
+('listening', 2, 37, 'What does the professor suggest the student do?', NULL, 'Change the topic', 'Narrow the focus', 'Add more sources', 'Extend the deadline', 'b'),
+('listening', 2, 38, 'What can be inferred about the student?', NULL, 'She is ahead of schedule', 'She is struggling with the assignment', 'She is confident about her work', 'She is working with a partner', 'b'),
+
+-- PART C: Talks and Lectures (39-50)
+('listening', 3, 39, 'What is the main topic of the lecture?', NULL, 'Climate change', 'Renewable energy', 'Environmental policy', 'Sustainable development', 'b'),
+('listening', 3, 40, 'According to the professor, what is a major advantage of solar energy?', NULL, 'It is inexpensive', 'It is widely available', 'It requires little maintenance', 'It is highly efficient', 'b'),
+('listening', 3, 41, 'What does the professor say about wind energy?', NULL, 'It is the most efficient renewable source', 'It works best in certain locations', 'It is too expensive', 'It damages the environment', 'b'),
+('listening', 3, 42, 'Why does the professor mention fossil fuels?', NULL, 'To compare energy sources', 'To discuss historical development', 'To explain a concept', 'To introduce a new topic', 'a'),
+('listening', 3, 43, 'What will the professor probably discuss next?', NULL, 'Hydroelectric power', 'Nuclear energy', 'Energy conservation', 'Government regulations', 'a'),
+('listening', 3, 44, 'What is the speaker''s main point?', NULL, 'Technology is advancing rapidly', 'Education needs reform', 'Research requires funding', 'Innovation drives progress', 'd'),
+('listening', 3, 45, 'According to the speaker, what is the biggest challenge?', NULL, 'Limited resources', 'Lack of interest', 'Political resistance', 'Technical difficulties', 'a'),
+('listening', 3, 46, 'What example does the speaker give?', NULL, 'A successful project', 'A failed experiment', 'A historical event', 'A future prediction', 'a'),
+('listening', 3, 47, 'What does the speaker imply about the future?', NULL, 'It is uncertain', 'It is promising', 'It is problematic', 'It is predictable', 'b'),
+('listening', 3, 48, 'What is the speaker''s attitude toward the topic?', NULL, 'Critical', 'Optimistic', 'Neutral', 'Concerned', 'b'),
+('listening', 3, 49, 'What will the listeners probably do next?', NULL, 'Take a quiz', 'Discuss in groups', 'Write an essay', 'Watch a video', 'b'),
+('listening', 3, 50, 'What is the main purpose of the talk?', NULL, 'To inform', 'To persuade', 'To entertain', 'To instruct', 'a');
