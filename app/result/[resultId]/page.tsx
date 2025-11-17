@@ -14,7 +14,13 @@ interface DetailedResult {
   section: string
   question_number: number
   question_text: string
+  option_a?: string
+  option_b?: string
+  option_c?: string
+  option_d?: string
+  explanation?: string
   part?: number // for listening
+  passage_text?: string // for reading
 }
 
 interface PartAnalysis {
@@ -784,8 +790,14 @@ export default function ResultPage({ params }: { params: Promise<{ resultId: str
             {/* Detailed Question-by-Question Analysis */}
             {showDetailedAnalysis && result.detailed_results && (
               <div className="mt-8 pt-8 border-t border-gray-200">
-                <h4 className="font-bold text-gray-900 mb-4">Question-by-Question Review</h4>
-                <div className="space-y-3 max-h-96 overflow-y-auto">
+                <h4 className="font-bold text-gray-900 mb-4 flex items-center gap-2">
+                  <span className="text-xl">📝</span>
+                  Question-by-Question Review with Answers & Explanations
+                </h4>
+                <p className="text-sm text-gray-600 mb-6">
+                  Review all questions with correct answers and detailed explanations to improve your understanding.
+                </p>
+                <div className="space-y-4 max-h-[600px] overflow-y-auto pr-2">
                   {Object.entries(result.detailed_results)
                     .sort(([, a], [, b]) => {
                       if (a.section !== b.section) {
@@ -797,47 +809,150 @@ export default function ResultPage({ params }: { params: Promise<{ resultId: str
                     .map(([questionId, detail]) => (
                     <div
                       key={questionId}
-                      className={`p-4 rounded-lg border-2 ${
+                      className={`p-5 rounded-xl border-2 shadow-sm ${
                         detail.correct
-                          ? 'border-green-200 bg-green-50'
-                          : 'border-red-200 bg-red-50'
+                          ? 'border-green-200 bg-green-50/50'
+                          : 'border-red-200 bg-red-50/50'
                       }`}
                     >
-                      <div className="flex items-start justify-between gap-4">
-                        <div className="flex-1">
-                          <div className="flex items-center gap-2 mb-2">
-                            <span className={`px-2 py-1 rounded text-xs font-semibold ${
-                              detail.section === 'listening' ? 'bg-blue-100 text-blue-700' :
-                              detail.section === 'structure' ? 'bg-green-100 text-green-700' :
-                              'bg-purple-100 text-purple-700'
-                            }`}>
-                              {detail.section.toUpperCase()} #{detail.question_number}
-                            </span>
-                            {detail.correct ? (
-                              <span className="text-green-600 font-semibold text-sm">✓ Correct</span>
-                            ) : (
-                              <span className="text-red-600 font-semibold text-sm">✗ Wrong</span>
-                            )}
-                          </div>
-                          <p className="text-sm text-gray-700 mb-2">{detail.question_text}</p>
-                          <div className="text-xs">
-                            <span className="text-gray-700">Your answer: </span>
-                            <span className={`font-semibold ${
-                              detail.correct ? 'text-green-700' : 'text-red-700'
-                            }`}>
-                              {detail.user_answer.toUpperCase()}
-                            </span>
-                            {!detail.correct && (
-                              <>
-                                <span className="text-gray-700 ml-4">Correct answer: </span>
-                                <span className="font-semibold text-green-700">
-                                  {detail.correct_answer.toUpperCase()}
-                                </span>
-                              </>
-                            )}
+                      {/* Header */}
+                      <div className="flex items-center gap-3 mb-3">
+                        <span className={`px-3 py-1.5 rounded-lg text-xs font-bold ${
+                          detail.section === 'listening' ? 'bg-blue-600 text-white' :
+                          detail.section === 'structure' ? 'bg-green-600 text-white' :
+                          'bg-purple-600 text-white'
+                        }`}>
+                          {detail.section === 'listening' ? '🎧 LISTENING' :
+                           detail.section === 'structure' ? '✍️ STRUCTURE' :
+                           '📚 READING'} #{detail.question_number}
+                        </span>
+                        {detail.correct ? (
+                          <span className="flex items-center gap-1 text-green-700 font-bold text-sm">
+                            <CheckCircle className="h-4 w-4" />
+                            Correct
+                          </span>
+                        ) : (
+                          <span className="flex items-center gap-1 text-red-700 font-bold text-sm">
+                            <span className="text-lg">✗</span>
+                            Incorrect
+                          </span>
+                        )}
+                      </div>
+
+                      {/* Question Text */}
+                      <div className="mb-4">
+                        <p className="text-sm font-semibold text-gray-900 mb-2">Question:</p>
+                        <p className="text-sm text-gray-800 leading-relaxed bg-white p-3 rounded-lg border border-gray-200">
+                          {detail.question_text}
+                        </p>
+                      </div>
+
+                      {/* Answer Options */}
+                      {detail.option_a && (
+                        <div className="mb-4 space-y-2">
+                          <p className="text-sm font-semibold text-gray-900 mb-2">Answer Choices:</p>
+                          <div className="grid gap-2">
+                            {['a', 'b', 'c', 'd'].map((option) => {
+                              const optionText = detail[`option_${option}` as keyof DetailedResult] as string
+                              const isUserAnswer = detail.user_answer === option
+                              const isCorrectAnswer = detail.correct_answer === option
+                              
+                              return (
+                                <div
+                                  key={option}
+                                  className={`p-3 rounded-lg border-2 text-sm ${
+                                    isCorrectAnswer
+                                      ? 'border-green-500 bg-green-100 font-semibold'
+                                      : isUserAnswer && !detail.correct
+                                      ? 'border-red-500 bg-red-100'
+                                      : 'border-gray-200 bg-white'
+                                  }`}
+                                >
+                                  <div className="flex items-start gap-3">
+                                    <span className={`font-bold text-xs px-2 py-1 rounded ${
+                                      isCorrectAnswer
+                                        ? 'bg-green-600 text-white'
+                                        : isUserAnswer && !detail.correct
+                                        ? 'bg-red-600 text-white'
+                                        : 'bg-gray-600 text-white'
+                                    }`}>
+                                      {option.toUpperCase()}
+                                    </span>
+                                    <span className="flex-1 text-gray-800">{optionText}</span>
+                                    {isCorrectAnswer && (
+                                      <span className="text-green-700 font-bold text-xs whitespace-nowrap">
+                                        ✓ Correct Answer
+                                      </span>
+                                    )}
+                                    {isUserAnswer && !detail.correct && (
+                                      <span className="text-red-700 font-bold text-xs whitespace-nowrap">
+                                        ✗ Your Answer
+                                      </span>
+                                    )}
+                                  </div>
+                                </div>
+                              )
+                            })}
                           </div>
                         </div>
+                      )}
+
+                      {/* Answer Summary */}
+                      <div className="mb-4 p-3 bg-white rounded-lg border border-gray-200">
+                        <div className="grid grid-cols-2 gap-4 text-sm">
+                          <div>
+                            <span className="text-gray-600">Your Answer: </span>
+                            <span className={`font-bold ${
+                              detail.correct ? 'text-green-700' : 'text-red-700'
+                            }`}>
+                              ({detail.user_answer.toUpperCase()}) {detail[`option_${detail.user_answer}` as keyof DetailedResult] as string || 'N/A'}
+                            </span>
+                          </div>
+                          {!detail.correct && (
+                            <div>
+                              <span className="text-gray-600">Correct Answer: </span>
+                              <span className="font-bold text-green-700">
+                                ({detail.correct_answer.toUpperCase()}) {detail[`option_${detail.correct_answer}` as keyof DetailedResult] as string || 'N/A'}
+                              </span>
+                            </div>
+                          )}
+                        </div>
                       </div>
+
+                      {/* Explanation */}
+                      {detail.explanation && (
+                        <div className={`p-4 rounded-lg border-2 ${
+                          detail.correct 
+                            ? 'bg-blue-50 border-blue-200' 
+                            : 'bg-yellow-50 border-yellow-200'
+                        }`}>
+                          <div className="flex items-start gap-2">
+                            <span className="text-lg">💡</span>
+                            <div className="flex-1">
+                              <p className="font-semibold text-gray-900 text-sm mb-1">Explanation:</p>
+                              <p className="text-sm text-gray-800 leading-relaxed">
+                                {detail.explanation}
+                              </p>
+                            </div>
+                          </div>
+                        </div>
+                      )}
+
+                      {/* Passage Text for Reading */}
+                      {detail.section === 'reading' && detail.passage_text && (
+                        <details className="mt-4">
+                          <summary className="cursor-pointer text-sm font-semibold text-purple-700 hover:text-purple-800">
+                            📖 View Full Passage
+                          </summary>
+                          <div className="mt-3 p-4 bg-white rounded-lg border border-purple-200 text-sm text-gray-700 leading-relaxed max-h-64 overflow-y-auto">
+                            {detail.passage_text.split('\n\n').map((paragraph, idx) => (
+                              <p key={idx} className="mb-3 last:mb-0">
+                                {paragraph}
+                              </p>
+                            ))}
+                          </div>
+                        </details>
+                      )}
                     </div>
                   ))}
                 </div>
