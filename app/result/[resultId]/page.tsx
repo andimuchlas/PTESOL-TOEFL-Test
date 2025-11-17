@@ -455,18 +455,18 @@ export default function ResultPage({ params }: { params: Promise<{ resultId: str
           {/* Action Buttons */}
           <div className="flex flex-col md:flex-row gap-4">
             <Link 
+              href="/"
+              className="flex-1 flex items-center justify-center gap-2 bg-gradient-to-r from-blue-600 to-indigo-600 text-white py-4 px-6 rounded-xl font-semibold hover:from-blue-700 hover:to-indigo-700 transition-all shadow-lg hover:shadow-xl"
+            >
+              <Home className="h-5 w-5" />
+              Back to Home
+            </Link>
+            <Link 
               href="/leaderboard"
-              className="flex-1 flex items-center justify-center gap-2 bg-blue-600 text-white py-4 px-6 rounded-xl font-semibold hover:bg-blue-700 transition-colors"
+              className="flex-1 flex items-center justify-center gap-2 bg-white text-gray-700 py-4 px-6 rounded-xl font-semibold hover:bg-gray-50 transition-colors border-2 border-gray-200"
             >
               <Trophy className="h-5 w-5" />
               View Leaderboard
-            </Link>
-            <Link 
-              href="/"
-              className="flex-1 flex items-center justify-center gap-2 bg-gray-100 text-gray-700 py-4 px-6 rounded-xl font-semibold hover:bg-gray-200 transition-colors"
-            >
-              <Home className="h-5 w-5" />
-              Take Another Test
             </Link>
           </div>
 

@@ -39,21 +39,29 @@ export function calculateScore(
   structureCorrect: number,
   readingCorrect: number
 ): number {
-  // Special case: if all answers wrong, return minimum score
-  if (listeningCorrect === 0 && structureCorrect === 0 && readingCorrect === 0) {
+  // PTESOL formula: Each section scored 31-68, then averaged and scaled
+  // Score range: 217-677
+  
+  const totalCorrect = listeningCorrect + structureCorrect + readingCorrect
+  
+  // If no questions answered correctly at all, return absolute minimum
+  if (totalCorrect === 0) {
     return MIN_SCORE // 217
   }
   
   // Convert raw scores to scaled scores (31-68 range)
-  const listeningScore = Math.round(31 + (listeningCorrect / 50) * 37)
-  const structureScore = Math.round(31 + (structureCorrect / 25) * 37)
-  const readingScore = Math.round(31 + (readingCorrect / 25) * 37)
+  const listeningScore = 31 + (listeningCorrect / 50) * 37
+  const structureScore = 31 + (structureCorrect / 25) * 37
+  const readingScore = 31 + (readingCorrect / 25) * 37
   
-  // Calculate total score
-  const totalScore = Math.round((listeningScore + structureScore + readingScore) * 10 / 3)
+  // Calculate average section score and scale to final range
+  // Formula: (section1 + section2 + section3) * 10 / 3
+  const averageScore = (listeningScore + structureScore + readingScore) / 3
+  const scaledScore = averageScore * 10
   
-  // Ensure within valid range
-  return Math.max(MIN_SCORE, Math.min(MAX_SCORE, totalScore))
+  // Round and ensure within valid range
+  const finalScore = Math.round(scaledScore)
+  return Math.max(MIN_SCORE, Math.min(MAX_SCORE, finalScore))
 }
 
 // Get passage number for reading questions (15 passages total, 5 questions each)
