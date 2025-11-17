@@ -4,7 +4,7 @@ import { use, useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { useTestStore } from '@/lib/store'
 import { submitTestResults } from '@/app/actions'
-import { SECTION_TIME_LIMITS, SECTION_QUESTIONS, SECTION_NAMES, formatTime, getListeningPartInfo, getStructureInstruction, getReadingInstruction } from '@/lib/utils'
+import { SECTION_TIME_LIMITS, SECTION_QUESTIONS, SECTION_NAMES, formatTime, getListeningPartInfo, getStructureInstruction, getReadingInstruction, getPassageNumber } from '@/lib/utils'
 import { Clock, ChevronLeft, ChevronRight, CheckCircle, AlertCircle } from 'lucide-react'
 
 export default function TestPage({ params }: { params: Promise<{ sessionId: string }> }) {
@@ -111,11 +111,15 @@ export default function TestPage({ params }: { params: Promise<{ sessionId: stri
         durationMinutes,
       })
 
-      // Reset test data
-      resetTest()
-
+      console.log('Test submitted, result ID:', result.id)
+      
       // Navigate to result page
       router.push(`/result/${result.id}`)
+      
+      // Small delay before resetting to ensure navigation starts
+      setTimeout(() => {
+        resetTest()
+      }, 100)
     } catch (error) {
       console.error('Error submitting test:', error)
       alert('Failed to submit test. Please try again.')
@@ -204,7 +208,7 @@ export default function TestPage({ params }: { params: Promise<{ sessionId: stri
                 </svg>
                 <div>
                   <h3 className="font-semibold text-green-900 text-sm mb-1">
-                    {currentQuestion.question_number <= 15 ? 'Sentence Completion' : 'Error Identification'}
+                    {currentQuestion.question_number <= 25 ? 'Sentence Completion' : 'Error Identification'}
                   </h3>
                   <p className="text-sm text-green-700">
                     {getStructureInstruction(currentQuestion.question_number)}
@@ -246,6 +250,14 @@ export default function TestPage({ params }: { params: Promise<{ sessionId: stri
                   {currentQuestion.part === 3 && 'Part C: Talks & Lectures'}
                 </span>
               )}
+              {currentSection === 'reading' && (() => {
+                const { passage, range } = getPassageNumber(currentQuestion.question_number);
+                return (
+                  <span className="inline-block px-3 py-1 bg-amber-100 text-amber-700 rounded-full text-xs font-semibold">
+                    Passage {passage} (Questions {range})
+                  </span>
+                );
+              })()}
             </div>
 
             {/* Question Text */}

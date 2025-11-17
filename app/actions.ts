@@ -5,24 +5,57 @@ import { calculateScore } from '@/lib/utils'
 
 export async function getRandomQuestions() {
   try {
-    // Get random questions for each section
+    // Get random questions for listening and structure (normal random)
     const { data: listeningQuestions, error: listeningError } = await supabase
       .rpc('get_random_questions', { p_section: 'listening', p_limit: 50 })
     
     const { data: structureQuestions, error: structureError } = await supabase
-      .rpc('get_random_questions', { p_section: 'structure', p_limit: 40 })
+      .rpc('get_random_questions', { p_section: 'structure', p_limit: 25 })
     
-    const { data: readingQuestions, error: readingError } = await supabase
-      .rpc('get_random_questions', { p_section: 'reading', p_limit: 50 })
+    if (listeningError || structureError) {
+      throw new Error('Failed to fetch listening or structure questions')
+    }
 
-    if (listeningError || structureError || readingError) {
-      throw new Error('Failed to fetch questions')
+    // For reading: Select 5 random passages (each passage = 5 questions)
+    // Get all reading questions grouped by passage
+    const { data: allReadingQuestions, error: readingError } = await supabase
+      .from('questions')
+      .select('*')
+      .eq('section', 'reading')
+      .order('question_number')
+    
+    if (readingError) {
+      throw new Error('Failed to fetch reading questions')
+    }
+
+    // Group questions by passage (every 5 questions = 1 passage)
+    const passages: any[][] = []
+    for (let i = 0; i < allReadingQuestions.length; i += 5) {
+      const passage = allReadingQuestions.slice(i, i + 5)
+      if (passage.length === 5) {
+        passages.push(passage)
+      }
+    }
+
+    // Randomly select 5 passages (5 passages × 5 questions = 25 questions)
+    const selectedPassages: any[] = []
+    const passageIndices = Array.from({ length: passages.length }, (_, i) => i)
+    
+    // Shuffle passage indices
+    for (let i = passageIndices.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [passageIndices[i], passageIndices[j]] = [passageIndices[j], passageIndices[i]]
+    }
+    
+    // Take first 5 passages
+    for (let i = 0; i < 5 && i < passageIndices.length; i++) {
+      selectedPassages.push(...passages[passageIndices[i]])
     }
 
     return {
       listening: listeningQuestions || [],
       structure: structureQuestions || [],
-      reading: readingQuestions || [],
+      reading: selectedPassages,
     }
   } catch (error) {
     console.error('Error fetching questions:', error)

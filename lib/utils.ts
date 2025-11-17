@@ -5,15 +5,15 @@ export const SECTION_TIME_LIMITS = {
   reading: 55 * 60,   // 55 minutes
 }
 
-// Number of questions per section
+// Number of questions per section (randomly selected from larger question bank)
 export const SECTION_QUESTIONS = {
-  listening: 50,
-  structure: 40,
-  reading: 50,
+  listening: 50,  // selected from 180 total
+  structure: 25,  // selected from 75 total
+  reading: 25,    // selected from 75 total
 }
 
-// Total questions
-export const TOTAL_QUESTIONS = 140
+// Total questions in a test
+export const TOTAL_QUESTIONS = 100
 
 // Score range
 export const MIN_SCORE = 217
@@ -39,16 +39,41 @@ export function calculateScore(
   structureCorrect: number,
   readingCorrect: number
 ): number {
+  // Special case: if all answers wrong, return minimum score
+  if (listeningCorrect === 0 && structureCorrect === 0 && readingCorrect === 0) {
+    return MIN_SCORE // 217
+  }
+  
   // Convert raw scores to scaled scores (31-68 range)
   const listeningScore = Math.round(31 + (listeningCorrect / 50) * 37)
-  const structureScore = Math.round(31 + (structureCorrect / 40) * 37)
-  const readingScore = Math.round(31 + (readingCorrect / 50) * 37)
+  const structureScore = Math.round(31 + (structureCorrect / 25) * 37)
+  const readingScore = Math.round(31 + (readingCorrect / 25) * 37)
   
   // Calculate total score
   const totalScore = Math.round((listeningScore + structureScore + readingScore) * 10 / 3)
   
   // Ensure within valid range
   return Math.max(MIN_SCORE, Math.min(MAX_SCORE, totalScore))
+}
+
+// Get passage number for reading questions (15 passages total, 5 questions each)
+export function getPassageNumber(questionNumber: number): { passage: number; range: string } {
+  if (questionNumber >= 1 && questionNumber <= 5) return { passage: 1, range: '1-5' }
+  if (questionNumber >= 6 && questionNumber <= 10) return { passage: 2, range: '6-10' }
+  if (questionNumber >= 11 && questionNumber <= 15) return { passage: 3, range: '11-15' }
+  if (questionNumber >= 16 && questionNumber <= 20) return { passage: 4, range: '16-20' }
+  if (questionNumber >= 21 && questionNumber <= 25) return { passage: 5, range: '21-25' }
+  if (questionNumber >= 26 && questionNumber <= 30) return { passage: 6, range: '26-30' }
+  if (questionNumber >= 31 && questionNumber <= 35) return { passage: 7, range: '31-35' }
+  if (questionNumber >= 36 && questionNumber <= 40) return { passage: 8, range: '36-40' }
+  if (questionNumber >= 41 && questionNumber <= 45) return { passage: 9, range: '41-45' }
+  if (questionNumber >= 46 && questionNumber <= 50) return { passage: 10, range: '46-50' }
+  if (questionNumber >= 51 && questionNumber <= 55) return { passage: 11, range: '51-55' }
+  if (questionNumber >= 56 && questionNumber <= 60) return { passage: 12, range: '56-60' }
+  if (questionNumber >= 61 && questionNumber <= 65) return { passage: 13, range: '61-65' }
+  if (questionNumber >= 66 && questionNumber <= 70) return { passage: 14, range: '66-70' }
+  if (questionNumber >= 71 && questionNumber <= 75) return { passage: 15, range: '71-75' }
+  return { passage: 0, range: '' }
 }
 
 // Get score level description
@@ -106,7 +131,7 @@ export function getListeningPartInfo(part: number | null): { name: string; instr
 
 // Get instructions for structure section based on question number
 export function getStructureInstruction(questionNumber: number): string {
-  if (questionNumber <= 15) {
+  if (questionNumber <= 25) {
     return 'Complete the sentence by choosing the correct answer.'
   } else {
     return 'Identify the underlined part that is grammatically incorrect.'

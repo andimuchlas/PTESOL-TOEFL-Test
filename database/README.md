@@ -1,5 +1,22 @@
 # Database Setup Guide
 
+## Quick Start: Full Restructure (Recommended)
+
+If you want complete, production-ready questions with proper formatting, follow the **Full Restructure Guide**:
+
+📘 **See `FULL_RESTRUCTURE_GUIDE.md`** for complete deployment instructions
+
+This will give you:
+- ✅ Structure Q1-15: Sentence completion questions with blanks
+- ✅ Structure Q16-40: Error identification questions with underlines
+- ✅ Reading Q1-50: 10 complete passages (Coral Reefs, Ancient Rome, etc.)
+- ✅ Proper passage indicators: "Passage 6 (Questions 26-29)"
+- ✅ Fixed score calculation: 0 correct = 217 (not 310)
+
+## Manual Setup (From Scratch)
+
+If you prefer to set up manually:
+
 ## Step 1: Access Supabase SQL Editor
 
 1. Login to your Supabase dashboard

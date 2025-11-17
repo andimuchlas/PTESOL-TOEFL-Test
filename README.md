@@ -15,12 +15,13 @@ Aplikasi web untuk tes kemampuan bahasa Inggris dengan format mirip TOEFL ITP. P
 
 ## 📋 Format Tes
 
-**3 Sections - 140 Questions Total**
+**3 Sections - 100 Questions Total (randomly selected from larger pool)**
 
-1. **Listening Comprehension** (50 soal, 35 menit)
-2. **Structure and Written Expression** (40 soal, 25 menit)
-3. **Reading Comprehension** (50 soal, 55 menit)
+1. **Listening Comprehension** (50 soal, 35 menit) - dari 180 soal
+2. **Structure and Written Expression** (25 soal, 25 menit) - dari 75 soal
+3. **Reading Comprehension** (25 soal, 55 menit) - dari 75 soal
 
+**Total Question Bank: 330 Questions**
 **Score Range: 217-677**
 
 ## 🚀 Quick Start
@@ -38,7 +39,14 @@ NEXT_PUBLIC_SUPABASE_ANON_KEY=your_supabase_anon_key
 ```
 
 ### 3. Setup Database
-Copy dan run SQL dari `database/schema.sql` di Supabase SQL Editor
+
+**Quick Setup (Recommended):**
+1. Go to Supabase SQL Editor
+2. Run `database/cleanup_and_restructure.sql` 
+3. See `database/DEPLOYMENT_GUIDE.md` for details
+
+**Or Manual Setup:**
+See `database/README.md` for step-by-step instructions
 
 ### 4. Run Development Server
 ```bash

@@ -48,16 +48,34 @@ Options: supplies | gives | to patients | theirs
 
 ## 🔧 Deployment Steps:
 
-### Step 1: Run Structure Restructure
+### Step 1: Add passage_text Column
+```sql
+-- In Supabase SQL Editor, run:
+-- File: database/add_passage_text.sql
+
+-- This adds the passage_text column to questions table
+-- Time: ~2 seconds
+```
+
+### Step 2: Run Structure Q1-15 (Sentence Completion)
+```sql
+-- In Supabase SQL Editor, run:
+-- File: database/restructure_structure_q1_15.sql
+
+-- This will update 15 questions (Q1-15) with proper blanks
+-- Time: ~3 seconds
+```
+
+### Step 3: Run Structure Q16-40 (Error Identification)
 ```sql
 -- In Supabase SQL Editor, run:
 -- File: database/restructure_structure_full.sql
 
--- This will update 25 questions (Q16-40)
+-- This will update 25 questions (Q16-40) with HTML underlines
 -- Time: ~5 seconds
 ```
 
-### Step 2: Run Reading Restructure
+### Step 4: Run Reading Restructure
 ```sql
 -- In Supabase SQL Editor, run:
 -- File: database/restructure_reading_full.sql
@@ -66,18 +84,25 @@ Options: supplies | gives | to patients | theirs
 -- Time: ~10 seconds
 ```
 
-### Step 3: Verify Changes
+### Step 5: Verify Changes
 1. Go to Supabase → Table Editor → questions
-2. Check question_number 37 (Structure):
+2. Check question_number 1 (Structure Sentence Completion):
+   - question_text should have _____ blank
+3. Check question_number 37 (Structure Error Identification):
    - question_text should have `<u>` tags
-3. Check question_number 26 (Reading):
+4. Check question_number 26 (Reading):
    - passage_text should be about Ocean Currents
 
-### Step 4: Test Frontend
+### Step 6: Test Frontend
 1. Start a new test
-2. Navigate to Structure section → Check if underlines appear
-3. Navigate to Reading section → Check if passages display
-4. Complete test → Check if analytics work
+2. Navigate to Structure section:
+   - Q1-15 should show completion questions with blanks
+   - Q16-40 should show error identification with underlines
+3. Navigate to Reading section:
+   - Check if passages display
+   - Check if "Passage X (Questions Y-Z)" badges appear
+4. Complete test (or leave all blank) → Check if result page shows correctly
+5. Check score with 0 answers → Should be 217, not 310
 
 ## 🎯 Expected Results:
 
