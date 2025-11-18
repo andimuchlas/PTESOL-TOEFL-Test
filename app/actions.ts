@@ -5,9 +5,13 @@ import { calculateScore } from '@/lib/utils'
 
 export async function getRandomQuestions() {
   try {
-    // Get random questions for listening and structure (normal random)
+    // Get 50 listening questions ordered by question_number (not random)
     const { data: listeningQuestions, error: listeningError } = await supabase
-      .rpc('get_random_questions', { p_section: 'listening', p_limit: 50 })
+      .from('questions')
+      .select('*')
+      .eq('section', 'listening')
+      .order('question_number')
+      .limit(50)
     
     const { data: structureQuestions, error: structureError } = await supabase
       .rpc('get_random_questions', { p_section: 'structure', p_limit: 40 })
